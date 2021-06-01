@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>e-Tender Complains Helper</title>
+    <link rel="icon"
+        href="data:;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAPCAYAAADtc08vAAACPklEQVQokXWTS0gUQBjHf9/s7LpomBSW78AW04yNXvbAsEAiygoLDLJTCEFQhyg6VKeIqEsdrLxU9LAOhRFIhzooHjpIkETIkgglYlFmJWb7mEeHVdhd8oOBmWF+v/kPHyPk1Lm+yvXO02es9KesvLBOem/v+fQt99x8Sebiz9ISff+ibhupV93GCcaCcWKMk0GTlnU9PjQ6ncmobJ9vXP3GbciAMU60cbLFeSY8JHMTZAuEViw6A8ZYwVhU0kpTwkh8QcHs8hKFokWcuCzYMT/vSFk5vXACRVQCUh3+61UGPFWszHljJZaWcnXXg5qW/wpES6towausm8dvFI/tfFQxOlwZTN4yVuIpK93b79RGswTxSCkE2Y/2hCzOOObeLtoDYeUPdq74fOT6yrG7AfyAsTxv6KorAVDx+rJ8gkQIESVP0B6VTiAYxzAwCDgPRXUF8VOvNn6saq/48cw4uRztrA9ptH+ISEi8VwBaiTFOYutG7L0zPYlNKV/aEGj/fTbQNHvcQw1C9ETk+5pjqyZ7ZkUtk8TmskvAhYxWDjgl75X1HUB4bjemr33ppdCfkSAQSg/J44Mkm8p3IPTltmeufkkk/lIdnaoi3zcShAzBNEEOaAnLINrPgCzKAJMsTvWqw5OaJbaNADpL6/kqjn1SzlsBMG0Vr4FmALTvl92TE1KZaPGKQhRxAgyLZsgHaZYgBs1eVUsMSJulQJ4iFFE980S2/lwLTAEnBYaAmNqW/gPuHTdxXFG1jM+H+QcjlwSwA6FV9wAAAABJRU5ErkJggg==">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.min.js" type="text/javascript"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/1.0.0/fetch.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <style>
+        html {
+            font-size: 8px;
+        }
+
+        body {
+            margin-left: 2rem;
+            margin-right: 2rem;
+        }
+
+        textarea:disabled {
+            background-color: lightgray;
+        }
+
+        textarea:read-only {
+            background-color: beige;
+        }
+
+        .wrap-block-request,
+        .wrap-block-reponse {
+            padding: 1.5rem;
+            border: 0.1rem solid #d1d1d1;
+            border-radius: .4rem;
+            margin-top: 2rem;
+        }
+
+        .control-block-tender label.label {
+            display: inline-block;
+            width: 200px;
+        }
+
+        .control-block-tender select {
+            width: 30%;
+        }
+
+        .control-block-sequenceNumber label.label {
+            display: inline-block;
+            width: 17rem;
+            text-align: right;
+            padding-right: 0.5rem;
+        }
+
+        .control-block-sequenceNumber input.standard,
+        .control-block-sequenceNumber select {
+            width: 13rem;
+        }
+
+        .control-block-reponse textarea {
+            min-height: 50rem;
+        }
+
+        .complaint-action-body {
+            min-height: 15rem;
+        }
+    </style>
+</head>
+
+<body>
+    <form>
+        <div class="row">
+            <div class="column">
+                <div class="wrap-block-request">
+                    <fieldset class="control-block control-block-tender">
+                        <legend>Tender details</legend>
+
+                        <label class="label" for="tenderId">Bearer:</label>
+                        <div class="row">
+                            <div class="column column-75">
+                                <input type="text" id="bearer" class="standard" value="" />
+                            </div>
+                        </div>
+
+                        <label class="label" for="tenderId">Tender ID:</label>
+                        <div class="row">
+                            <div class="column column-75">
+                                <input type="text" id="tenderId" class="standard"
+                                    value="26f0324d8b604dac973c72b236994954" />
+                            </div>
+                            <div class="column">
+                                <input type="button" id="tender-get" value="GET" class="action" />
+                            </div>
+                        </div>
+
+                        <label class="label" for="awardId">Award ID:</label>
+                        <div class="row">
+                            <div class="column column-75">
+                                <input type="text" id="awardId" class="standard"
+                                    value="" />
+                            </div>
+                            <div class="column">
+                                <input type="button" id="award-get" value="GET" class="action" />
+                            </div>
+                        </div>
+
+                        <label class="label" for="complaintId">Complaint ID:</label>
+                        <div class="row">
+                            <div class="column column-75">
+                                <input type="text" id="complaintId" class="standard"
+                                    value="5cd2e92e1e454833b02c4f5c144e86fa" />
+                            </div>
+                            <div class="column column-5">
+                                <input type="button" id="complaint-get" value="GET" class="action" />
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="control-block control-block-complaint">
+                        <legend>Complaint actions</legend>
+
+                        <div class="row">
+                            <!--PENDING-->
+                            <div class="column">
+                                <textarea id="complaint-pending" class="complaint-action-body">
+{
+    "data": {
+        "status": "pending"
+    }
+} 
+                                </textarea>
+                                <input type="button" id="complaint-pending" value="Pending"
+                                    class="action complaint-action" data-action="pending" />
+                            </div>
+                            <!--ACCEPTED-->
+                            <div class="column">
+                                <textarea id="complaint-accepted" class="complaint-action-body">
+{
+    "data": {
+        "status": "accepted",
+        "reviewDate": "2021-05-27T11:05:40.761995+03:00",
+        "reviewPlace": "Місце розгляду скарги"
+    }
+}
+                                </textarea>
+                                <input type="button" id="complaint-accepted" value="Accepted"
+                                    class="action complaint-action" data-action="accepted" />
+                            </div>
+                            <!--SATISFIED-->
+                            <div class="column">
+                                <textarea id="complaint-satisfied" class="complaint-action-body">
+{
+    "data": {
+        "status": "satisfied"
+    }
+} 
+                                </textarea>
+                                <input type="button" id="complaint-satisfied" value="Satisfied"
+                                    class="action complaint-action" data-action="satisfied" />
+                            </div>
+                            <!--DECLINED-->
+                            <div class="column">
+                                <textarea id="complaint-declined" class="complaint-action-body">
+{
+    "data": {
+        "status": "declined",
+        "rejectReason": "alreadyExists"
+    }
+} 
+                                </textarea>
+                                <input type="button" id="complaint-declined" value="Declined"
+                                    class="action complaint-action" data-action="declined" />
+                            </div>
+                            <!--RESOLVED-->
+                            <div class="column">
+                                <textarea id="complaint-resolved" class="complaint-action-body">
+{
+    "data": {
+        "status": "resolved",
+        "tendererAction": "tender action 1"
+    }
+} 
+                            </textarea>
+                                <input type="button" id="complaint-resolved" value="Resolved"
+                                    class="action complaint-action" data-action="resolved" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="column">
+                                <textarea id="complaint-post-body" class="complaint-action-body">
+{
+    "data": {
+        "recipient": "tender_owner",
+        "description": "Запит заказчику 1",
+        "title": "Уточнення по скарге 1"
+    }
+}
+                                </textarea>
+                                <input type="button" id="complaint-post" value="Post" class="action"/>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                </div>
+            </div>
+            <div class="column">
+                <div class="wrap-block-reponse">
+                    <fieldset class="control-block control-block-reponse">
+
+                        <label for="response">Response:</label>
+                        <textarea id="response" readonly="readonly"></textarea>
+
+                        <label for="status" class="label-inline">Status Code:</label>
+                        <input type="text" id="status" readonly="readonly" value="" class="standard" />
+
+                        <label for="timer" class="label-inline">Timer (milliseconds):</label>
+                        <input type="text" id="timer" readonly="readonly" value="" class="standard" />
+                    </fieldset>
+
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+    <script language="javascript" type="text/javascript">
+
+        (function ($) {
+            var bearer = $("#bearer"),
+                tenderId = $("#tenderId"),
+                awardId = $("#awardId"),
+                complaintId = $("#complaintId"),
+
+                response = $("#response"),
+                status = $("#status"),
+                timer = $("#timer"),
+                responseData = null
+                ;
+
+            $('#tender-get').click(doGetTender);
+            $('#award-get').click(doGetAward);
+            $('#complaint-get').click(doGetComplaint);
+            $('.complaint-action').click(doComplaintAction);
+            $('#complaint-post').click(doPostToComplaint);
+
+            function reset() {
+                responseData = null;
+                response.val("");
+                timer.val("");
+                status.val("");
+            }
+
+            // helpers
+            function getComplaintUrl() {
+                var id = awardId.val();
+                var awardUrl = id.length > 0 ? `awards/${id}/` : '';
+                var url = `tenders/${tenderId.val()}/${awardUrl}complaints/${complaintId.val()}`;
+                return url;
+            }
+
+            function getAuthHeaders() {
+                var headers = {
+                    "Authorization": `Bearer ${bearer.val()}`
+                };
+                return headers;
+            }
+
+            // methods
+
+            function doGetTender() {
+                return doRawRequest(`tenders/${tenderId.val()}`, 'GET');
+            }
+
+            function doGetAward() {
+                return doRawRequest(`tenders/${tenderId.val()}/awards/${awardId.val()}`, 'GET');
+            }
+
+            function doGetComplaint() {
+                var url = getComplaintUrl();
+                return doRawRequest(url, 'GET');
+            }
+
+            function doPostToComplaint() {
+                var url = getComplaintUrl();
+                var body = $(`#complaint-post-body`).text();
+                var headers = getAuthHeaders();
+                return doRawRequest(url, 'POST', headers, body);
+            }
+
+            function doComplaintAction() {
+                var action = $(this).data('action');
+                var body = $(`#complaint-${action}`).text();
+                var headers = getAuthHeaders();
+
+                var url = getComplaintUrl();
+
+                return doRawRequest(
+                    url,
+                    'PATCH',
+                    headers,
+                    body
+                );
+            }
+
+            function doRawRequest(url, method, headers, body) {
+                reset();
+
+                var fullUrl = 'https://lb-api-staging.prozorro.gov.ua/api/2.5/' + url;
+
+                method = method || "POST";
+                headers = headers || {};
+                headers["Content-type"] = "application/json";
+
+                var payload = body ? JSON.parse(body) : null;
+
+                var startDate = new Date();
+                return axios({
+                    url: fullUrl,
+                    method: method,
+                    headers: headers,
+                    withCredentials: false
+                })
+                    .then(function (response) {
+                        status.val(response.status);
+                        if (response.status !== 200 && response.status !== 201) {
+                            result = Promise.reject(response);
+                        } else {
+                            result = response.data;
+                        }
+                        return result;
+                    })
+                    .then(function (v) {
+                        timer.val(new Date() - startDate);
+                        responseData = v;
+                        response.val(JSON.stringify(v, null, 4));
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                        response.val("FAILED - " + (error.message || error.status));
+                        return Promise.reject(error);
+                    })
+                    .then(function () {
+                        timer.val(new Date() - startDate);
+                    });
+            }
+
+        })(jQuery);
+
+    </script>
+</body>
+
+</html>
